@@ -3,7 +3,6 @@ name: test-build-release
 on: push
 jobs:
   release:
-    needs: tests
     name: Create release
     runs-on: ubuntu-latest
     steps:
