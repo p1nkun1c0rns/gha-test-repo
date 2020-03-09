@@ -1,4 +1,7 @@
 name: Bump version
+
+# Github Action doc: https://help.github.com/en/actions/reference/events-that-trigger-workflows#deployment-event-deployment
+# Github Action API: https://developer.github.com/v3/repos/deployments/#create-a-deployment
 on:
   deployment
 
@@ -8,3 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: 'Deploy ${{ github.event.deployment.environment }}'
+        run: |
+          echo "task - ${{ github.event.deployment.task }}"
+          echo "environment - ${{ github.event.deployment.environment }}"
+          echo "payload - ${{ toJson(github.event.deployment.payload.env) }}"
+
+      - name: 'deployment success'
+        if: success()
+        uses: 'deliverybot/status@master'
+        with:
+          state: 'success'
+          token: '${{ secrets.GITHUB_TOKEN }}'
